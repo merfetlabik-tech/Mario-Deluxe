@@ -5,242 +5,79 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>Mario Deluxe - 50 Levels</title>
 <style>
-*{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#111;font-family:Arial}
-body{display:flex;align-items:center;justify-content:center}
-.wrap{position:relative;width:min(100vw,960px);height:min(100vh,540px);aspect-ratio:16/9;background:#6ec6ff;overflow:hidden}
-canvas{width:100%;height:100%;display:block}
-.screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(#10264add,#07101eee);color:white;text-align:center;z-index:5}
-.hide{display:none!important}
-.title{font-size:clamp(35px,7vw,68px);font-weight:900;margin:0 0 8px}
-.sub{font-size:17px;margin:0 0 18px}
-.btn{border:0;border-radius:14px;padding:13px 24px;margin:5px;background:white;color:#17202a;font-size:18px;font-weight:800}
-.levels{width:90%;max-height:230px;overflow:auto;display:grid;grid-template-columns:repeat(10,1fr);gap:7px;padding:8px}
-.lv{padding:9px 2px;border:0;border-radius:9px;font-weight:bold}
-.hud{position:absolute;left:10px;right:10px;top:8px;display:flex;justify-content:space-between;color:white;font-weight:bold;font-size:16px;text-shadow:0 2px 3px #000;z-index:3}
-.hud span{background:#0007;padding:6px 9px;border-radius:9px}
-.controls{position:absolute;left:0;right:0;bottom:10px;display:flex;justify-content:space-between;padding:0 14px;z-index:4}
-.group{display:flex;gap:10px}
-.ctrl{width:65px;height:65px;border:0;border-radius:50%;background:#ffffffaa;font-size:28px;font-weight:bold}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#111;font-family:Arial,sans-serif}body{display:flex;align-items:center;justify-content:center}.wrap{position:relative;width:min(100vw,960px);height:min(100vh,540px);aspect-ratio:16/9;background:#6ec6ff;overflow:hidden;border-radius:14px;box-shadow:0 12px 40px #0008}canvas{width:100%;height:100%;display:block;touch-action:none}.screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(#10264add,#07101eee);color:#fff;text-align:center;z-index:5}.screen.hide{display:none}.title{font-size:clamp(32px,7vw,68px);font-weight:900;margin:0 0 8px;text-shadow:0 5px 0 #000}.sub{font-size:18px;margin:0 0 20px}.btn{border:0;border-radius:14px;padding:13px 24px;margin:5px;background:#fff;color:#17202a;font-size:18px;font-weight:800;cursor:pointer;box-shadow:0 5px 0 #0005}.btn:active{transform:translateY(3px);box-shadow:0 2px 0 #0005}.levels{width:min(90%,760px);max-height:250px;overflow:auto;display:grid;grid-template-columns:repeat(10,1fr);gap:7px;padding:8px}.lv{padding:9px 2px;border:0;border-radius:9px;font-weight:800;background:#eee;cursor:pointer}.lv.lock{opacity:.35}.lv.sel{outline:3px solid #ffd43b}.hud{position:absolute;left:10px;right:10px;top:8px;display:flex;justify-content:space-between;gap:8px;color:#fff;font-weight:900;font-size:16px;text-shadow:0 2px 3px #000;pointer-events:none;z-index:3}.hud span{background:#0005;padding:6px 9px;border-radius:9px}.pause{pointer-events:auto;border:0;border-radius:9px;padding:6px 10px;font-weight:900}.controls{position:absolute;left:0;right:0;bottom:10px;display:flex;justify-content:space-between;padding:0 14px;pointer-events:none;z-index:4}.group{display:flex;gap:10px}.ctrl{width:66px;height:66px;border:0;border-radius:50%;background:#ffffffaa;font-size:29px;font-weight:900;box-shadow:0 4px 12px #0005;pointer-events:auto;touch-action:none;user-select:none}.hint{font-size:13px;opacity:.8;margin-top:8px}.world{font-size:20px;font-weight:900;margin-bottom:5px}
 </style>
 </head>
 <body>
 <div class="wrap">
 <canvas id="game" width="960" height="540"></canvas>
-
 <div id="menu" class="screen">
-<div>5 عوالم • 50 مرحلة</div>
-<h1 class="title">Mario Deluxe</h1>
-<p class="sub">مغامرة منصات ممتعة 🎮</p>
-<button id="start" class="btn">ابدأ اللعب</button>
-<button id="sound" class="btn">🔊 الصوت</button>
-<div id="levels" class="levels"></div>
+<div class="world">5 Worlds • 50 Levels</div><h1 class="title">Mario Deluxe</h1><p class="sub">مغامرة منصات أصلية مستوحاة من ألعاب المنصات الكلاسيكية</p>
+<button id="start" class="btn">ابدأ اللعب</button><button id="sound" class="btn">🔊 الصوت</button>
+<div id="levels" class="levels"></div><div class="hint">الكمبيوتر: ← → للحركة و Space للقفز • الموبايل: الأزرار بالأسفل</div>
 </div>
-
-<div class="hud">
-<span id="levelText">المرحلة 1</span>
-<span id="score">⭐ 0</span>
+<div id="hud" class="hud hide"><span id="worldText"></span><span id="levelText"></span><span id="coinText">🪙 0</span><span id="heartText">❤️❤️❤️</span><button id="pause" class="pause">⏸</button></div>
+<div id="controls" class="controls hide"><div class="group"><button class="ctrl" data-key="left">◀</button><button class="ctrl" data-key="right">▶</button></div><div class="group"><button class="ctrl" data-key="jump">⬆</button></div></div>
+<div id="over" class="screen hide"><h2 class="title" id="overTitle">أحسنت!</h2><p class="sub" id="overSub"></p><button id="next" class="btn">المرحلة التالية</button><button id="back" class="btn">القائمة</button></div>
 </div>
-
-<div class="controls">
-<div class="group">
-<button class="ctrl" id="left">◀</button>
-<button class="ctrl" id="right">▶</button>
-</div>
-<div class="group">
-<button class="ctrl" id="jump">⬆</button>
-</div>
-</div>
-</div>
-
 <script>
-const canvas=document.getElementById("game");
-const ctx=canvas.getContext("2d");
-
-let level=1,score=0,running=false;
-let keys={left:false,right:false};
-let player={x:80,y:400,w:35,h:45,vx:0,vy:0,onGround:false};
-let coins=[];
-let blocks=[];
-let enemies=[];
-let goal={x:900,y:430,w:35,h:70};
-
-function makeLevel(){
- coins=[];blocks=[];enemies=[];
- for(let i=0;i<8;i++){
-   coins.push({x:150+i*95,y:300-(i%3)*55,r:10});
- }
- for(let i=0;i<7;i++){
-   blocks.push({x:100+i*125,y:470,w:100,h:70});
- }
- for(let i=0;i<3;i++){
-   enemies.push({x:300+i*210,y:425,w:32,h:32,vx:1.3});
- }
- player={x:55,y:390,w:35,h:45,vx:0,vy:0,onGround:false};
- goal={x:900,y:400,w:25,h:100};
- document.getElementById("levelText").textContent="المرحلة "+level;
+'use strict';
+const canvas=document.getElementById('game'),ctx=canvas.getContext('2d');
+const W=960,H=540;
+let selected=1,unlocked=Math.max(1,Number(localStorage.getItem('md50_unlock')||1)),started=false,paused=false,level=1,world=1;
+let keys={left:false,right:false,jump:false},p,enemies=[],coins=[],stars=[],platforms=[],finish=null,particles=[];
+let camera=0,score=0,totalCoins=0,hearts=3,invuln=0,last=0,muted=false,audio=null,musicTimer=null,musicStep=0;
+const themes=[
+ {name:'الغابة',sky:'#72c9ff',ground:'#4f9b45',top:'#77d25d',accent:'#2d7b35'},
+ {name:'الصحراء',sky:'#f5c66d',ground:'#b9783c',top:'#e5a24e',accent:'#7d4a27'},
+ {name:'الثلج',sky:'#bfe8ff',ground:'#87a9b8',top:'#eaf8ff',accent:'#507487'},
+ {name:'البركان',sky:'#5b2830',ground:'#573238',top:'#9d3b29',accent:'#ff7a1a'},
+ {name:'القلعة',sky:'#202746',ground:'#383b52',top:'#777b98',accent:'#c84b5c'}
+];
+function clamp(v,a,b){return Math.max(a,Math.min(b,v))} function rect(a,b,c,d){return {x:a,y:b,w:c,h:d}} function hit(a,b){return a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y}
+function rng(seed){let s=seed>>>0;return()=>{s=(s*1664525+1013904223)>>>0;return s/4294967296}}
+function initAudio(){if(muted)return;if(!audio)audio=new (window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume();if(!musicTimer){musicTimer=setInterval(musicTick,280)}}
+function tone(f,d=.07,v=.035){if(muted||!audio)return;const o=audio.createOscillator(),g=audio.createGain();o.frequency.value=f;o.type='square';g.gain.setValueAtTime(v,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+d);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+d)}
+function musicTick(){if(!started||paused||muted)return;const notes=[[262,330,392,330],[196,247,294,247],[330,392,494,392],[147,185,220,185],[220,277,330,277]][world-1];tone(notes[musicStep++%4],.16,.012)}
+function worldFor(n){return Math.floor((n-1)/10)+1}
+function selectLevel(n){if(n>unlocked)return;selected=n;renderLevels()}
+function renderLevels(){const box=document.getElementById('levels');box.innerHTML='';for(let i=1;i<=50;i++){const b=document.createElement('button');b.className='lv'+(i>unlocked?' lock':'')+(i===selected?' sel':'');b.textContent=i;b.disabled=i>unlocked;b.onclick=()=>selectLevel(i);box.appendChild(b)}}
+function buildLevel(n){
+ level=n;world=worldFor(n);const t=themes[world-1],r=rng(n*991+17);platforms=[];enemies=[];coins=[];stars=[];particles=[];camera=0;invuln=0;
+ const len=5200+world*250+n*35; platforms.push(rect(0,450,620,90));
+ let x=620,y=430; while(x<len-500){const gap=35+Math.floor(r()*(45+world*7));x+=gap;const w=170+Math.floor(r()*150);y=clamp(y+(r()-.5)*90,315,445);platforms.push(rect(x,y,w,90));if(r()<.65)coins.push({x:x+w*.5,y:y-38,r:9});if(r()<.18)stars.push({x:x+w*.72,y:y-68,r:12});if(r()<.48){const eh=world===5&&n%10===0?46:34;enemies.push({x:x+w*.25,y:y-eh,w:world===5&&n%10===0?54:34,h:eh,v:(r()<.5?-1:1)*(1+world*.15),min:x+8,max:x+w-45,hp:world===5&&n%10===0?2:1,boss:world===5&&n%10===0})}x+=w-15}
+ platforms.push(rect(len-500,400,500,140));finish={x:len-150,y:300,w:28,h:100};
+ p={x:70,y:450-54,w:30,h:54,vx:0,vy:0,on:false};
+ updateHud();
 }
-
-function draw(){
- ctx.clearRect(0,0,960,540);
-
- let sky=ctx.createLinearGradient(0,0,0,540);
- sky.addColorStop(0,"#55c7ff");
- sky.addColorStop(1,"#dff7ff");
- ctx.fillStyle=sky;ctx.fillRect(0,0,960,540);
-
- ctx.fillStyle="#74c365";
- for(let i=0;i<12;i++){
-   ctx.beginPath();
-   ctx.arc(i*100+40,430,80,Math.PI,0);
-   ctx.fill();
- }
-
- blocks.forEach(b=>{
-   ctx.fillStyle="#8b5a2b";
-   ctx.fillRect(b.x,b.y,b.w,b.h);
-   ctx.fillStyle="#55a832";
-   ctx.fillRect(b.x,b.y,b.w,10);
- });
-
- coins.forEach(c=>{
-   ctx.fillStyle="#ffd43b";
-   ctx.beginPath();ctx.arc(c.x,c.y,c.r,0,Math.PI*2);ctx.fill();
- });
-
- enemies.forEach(e=>{
-   ctx.fillStyle="#8b1e1e";
-   ctx.fillRect(e.x,e.y,e.w,e.h);
-   ctx.fillStyle="#fff";
-   ctx.fillRect(e.x+6,e.y+7,7,7);
-   ctx.fillRect(e.x+20,e.y+7,7,7);
- });
-
- ctx.fillStyle="#fff";
- ctx.fillRect(goal.x,goal.y,5,100);
- ctx.fillStyle="#e63946";
- ctx.fillRect(goal.x+5,goal.y,45,28);
-
- ctx.fillStyle="#e63946";
- ctx.fillRect(player.x,player.y,player.w,player.h);
- ctx.fillStyle="#ffd1a9";
- ctx.fillRect(player.x+8,player.y+8,19,18);
- ctx.fillStyle="#5b2c83";
- ctx.fillRect(player.x+4,player.y,27,9);
+function updateHud(){document.getElementById('worldText').textContent='🌍 '+themes[world-1].name;document.getElementById('levelText').textContent='⭐ '+level+'/50';document.getElementById('coinText').textContent='🪙 '+totalCoins;document.getElementById('heartText').textContent='❤️'.repeat(hearts)+'🖤'.repeat(3-hearts)}
+function startGame(){if(started)return;initAudio();started=true;paused=false;document.getElementById('menu').classList.add('hide');document.getElementById('hud').classList.remove('hide');document.getElementById('controls').classList.remove('hide');buildLevel(selected);tone(440,.1,.04)}
+function restart(){hearts=3;totalCoins=0;buildLevel(level)}
+function hurt(){if(invuln>0)return;hearts--;invuln=1.2;tone(110,.18,.05);if(hearts<=0){showOver('انتهت القلوب','جرّب المرحلة مرة ثانية');}else{p.x=Math.max(60,p.x-180);p.y=200;p.vx=0;p.vy=0;updateHud()}}
+function showOver(title,sub){paused=true;document.getElementById('overTitle').textContent=title;document.getElementById('overSub').textContent=sub;document.getElementById('next').style.display=level<50&&title!=='انتهت القلوب'?'inline-block':'none';document.getElementById('over').classList.remove('hide')}
+function nextLevel(){document.getElementById('over').classList.add('hide');if(level<50){level++;selected=level;if(level>unlocked){unlocked=level;localStorage.setItem('md50_unlock',unlocked)}hearts=3;buildLevel(level);paused=false;renderLevels()}else{showOver('🏆 خلصت 50 مرحلة!','أنت بطل Mario Deluxe')} }
+function backMenu(){started=false;paused=false;document.getElementById('over').classList.add('hide');document.getElementById('hud').classList.add('hide');document.getElementById('controls').classList.add('hide');document.getElementById('menu').classList.remove('hide');renderLevels()}
+function setKey(k,v){keys[k]=v;if(v) initAudio()}
+window.addEventListener('keydown',e=>{if(e.code==='ArrowLeft'||e.code==='KeyA'){e.preventDefault();setKey('left',true)}if(e.code==='ArrowRight'||e.code==='KeyD'){e.preventDefault();setKey('right',true)}if(e.code==='Space'||e.code==='ArrowUp'||e.code==='KeyW'){e.preventDefault();setKey('jump',true)}});
+window.addEventListener('keyup',e=>{if(e.code==='ArrowLeft'||e.code==='KeyA')setKey('left',false);if(e.code==='ArrowRight'||e.code==='KeyD')setKey('right',false);if(e.code==='Space'||e.code==='ArrowUp'||e.code==='KeyW')setKey('jump',false)});
+document.querySelectorAll('.ctrl').forEach(el=>{const orig=el.dataset.key;const k=orig==='left'?'right':orig==='right'?'left':'jump';const down=e=>{e.preventDefault();setKey(k,true)};const up=e=>{e.preventDefault();setKey(k,false)};el.addEventListener('pointerdown',down);el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up);el.addEventListener('pointerleave',up)});
+document.getElementById('start').addEventListener('click',startGame);document.getElementById('start').addEventListener('pointerup',e=>{e.preventDefault();startGame()});
+document.getElementById('pause').onclick=()=>{paused=!paused;document.getElementById('pause').textContent=paused?'▶':'⏸'};
+document.getElementById('sound').onclick=()=>{muted=!muted;document.getElementById('sound').textContent=muted?'🔇 الصوت':'🔊 الصوت';if(!muted)initAudio()};document.getElementById('next').onclick=nextLevel;document.getElementById('back').onclick=backMenu;
+function update(dt){if(!started||paused)return;dt=Math.min(dt,.025);invuln=Math.max(0,invuln-dt);const accel=32,max=5.8;if(keys.left)p.vx-=accel*dt;if(keys.right)p.vx+=accel*dt;if(!keys.left&&!keys.right)p.vx*=Math.pow(.08,dt);p.vx=clamp(p.vx,-max,max);if(keys.jump&&p.on){p.vy=-12; p.on=false;tone(520,.08,.035)}p.vy+=30*dt;p.x+=p.vx*dt*60;p.y+=p.vy*dt*60;
+ const prevBottom=p.y-p.vy*dt*60+p.h;p.on=false;for(const q of platforms){if(p.x+p.w>q.x&&p.x<q.x+q.w&&p.y+p.h>=q.y&&prevBottom<=q.y+4&&p.vy>=0){p.y=q.y-p.h;p.vy=0;p.on=true}}
+ for(const c of coins){if(!c.got&&Math.hypot(p.x+p.w/2-c.x,p.y+p.h/2-c.y)<25){c.got=true;totalCoins++;tone(880,.06,.04);updateHud()}}
+ for(const s of stars){if(!s.got&&Math.hypot(p.x+p.w/2-s.x,p.y+p.h/2-s.y)<27){s.got=true;score+=10;tone(1040,.09,.04)}}
+ for(const e of enemies){if(e.dead)continue;e.x+=e.v*dt*60;if(e.x<e.min||e.x>e.max)e.v*=-1;const stomp=p.vy>=0&&prevBottom<=e.y+10&&p.y+p.h>=e.y&&p.x+p.w>e.x+5&&p.x<e.x+e.w-5;if(stomp){e.hp--;p.y=e.y-p.h;p.vy=-9;score+=5;totalCoins+=e.boss?3:2;tone(760,.07,.04);if(e.hp<=0)e.dead=true}else if(hit(p,e)){hurt()}}
+ enemies=enemies.filter(e=>!e.dead);if(p.y>H+80)hurt();if(p.x+p.w>finish.x&&p.y+p.h>finish.y){if(level<50){unlocked=Math.max(unlocked,level+1);localStorage.setItem('md50_unlock',unlocked);showOver('🎉 أحسنت!',`أنهيت المرحلة ${level} وفتحت المرحلة ${level+1}`)}else showOver('🏆 فزت!','أنهيت كل المراحل الخمسين')}
+ camera=clamp(p.x-330,0,Math.max(0,(finish.x+200)-W));
+ for(let i=particles.length-1;i>=0;i--){const z=particles[i];z.x+=z.vx*dt*60;z.y+=z.vy*dt*60;z.vy+=18*dt;z.life-=dt;if(z.life<=0)particles.splice(i,1)}
 }
-
-function update(){
- if(!running)return;
-
- player.vx=0;
- if(keys.left)player.vx=-4;
- if(keys.right)player.vx=4;
-
- player.vy+=0.55;
- player.x+=player.vx;
- player.y+=player.vy;
-
- player.onGround=false;
-
- blocks.forEach(b=>{
-   if(player.x< b.x+b.w &&
-      player.x+player.w>b.x &&
-      player.y+player.h>b.y &&
-      player.y+player.h-player.vy<=b.y){
-     player.y=b.y-player.h;
-     player.vy=0;
-     player.onGround=true;
-   }
- });
-
- if(player.x<0)player.x=0;
- if(player.x>925)player.x=925;
- if(player.y>540){
-   makeLevel();
- }
-
- coins=coins.filter(c=>{
-   let hit=player.x<c.x+10&&player.x+player.w>c.x-10&&
-           player.y<c.y+10&&player.y+player.h>c.y-10;
-   if(hit){score++;document.getElementById("score").textContent="⭐ "+score}
-   return !hit;
- });
-
- enemies.forEach(e=>{
-   e.x+=e.vx;
-   if(e.x<150||e.x>850)e.vx*=-1;
-   if(player.x<e.x+e.w&&player.x+player.w>e.x&&
-      player.y<e.y+e.h&&player.y+player.h>e.y){
-     makeLevel();
-   }
- });
-
- if(player.x+player.w>goal.x){
-   if(level<50){
-     level++;
-     makeLevel();
-   }else{
-     running=false;
-     document.getElementById("menu").classList.remove("hide");
-     document.querySelector(".sub").textContent="🎉 مبروك! خلصت جميع المراحل!";
-   }
- }
-}
-
-function loop(){
- update();
- draw();
- requestAnimationFrame(loop);
-}
-
-function jump(){
- if(player.onGround){
-   player.vy=-11;
- }
-}
-
-document.getElementById("start").onclick=()=>{
- running=true;
- document.getElementById("menu").classList.add("hide");
- makeLevel();
-};
-
-document.getElementById("left").onpointerdown=()=>keys.left=true;
-document.getElementById("left").onpointerup=()=>keys.left=false;
-document.getElementById("left").onpointerleave=()=>keys.left=false;
-
-document.getElementById("right").onpointerdown=()=>keys.right=true;
-document.getElementById("right").onpointerup=()=>keys.right=false;
-document.getElementById("right").onpointerleave=()=>keys.right=false;
-
-document.getElementById("jump").onpointerdown=jump;
-
-document.addEventListener("keydown",e=>{
- if(e.key==="ArrowLeft")keys.left=true;
- if(e.key==="ArrowRight")keys.right=true;
- if(e.key===" "||e.key==="ArrowUp")jump();
-});
-
-document.addEventListener("keyup",e=>{
- if(e.key==="ArrowLeft")keys.left=false;
- if(e.key==="ArrowRight")keys.right=false;
-});
-
-for(let i=1;i<=50;i++){
- let b=document.createElement("button");
- b.className="lv";
- b.textContent=i;
- b.onclick=()=>{
-   level=i;
-   running=true;
-   document.getElementById("menu").classList.add("hide");
-   makeLevel();
- };
- document.getElementById("levels").appendChild(b);
-}
-
-makeLevel();
-loop();
+function drawPlayer(){const x=p.x,y=p.y,walk=Math.sin(performance.now()*.018)*3*(Math.abs(p.vx)>.3?1:0),blink=invuln>0&&Math.floor(invuln*12)%2===0;if(blink)return;ctx.save();ctx.translate(x,y);ctx.fillStyle='#0004';ctx.beginPath();ctx.ellipse(15,54,17,4,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='#2454a5';ctx.fillRect(5,32+walk,8,17);ctx.fillRect(17,32-walk,8,17);ctx.fillStyle='#653d22';ctx.fillRect(2,47+walk,12,6);ctx.fillRect(16,47-walk,12,6);ctx.fillStyle='#e33a32';ctx.fillRect(5,20,20,17);ctx.fillStyle='#2454a5';ctx.fillRect(8,24,4,12);ctx.fillRect(18,24,4,12);ctx.fillStyle='#f0b58e';ctx.fillRect(0,21-walk,6,13);ctx.fillRect(24,21+walk,6,13);ctx.beginPath();ctx.arc(15,14,11,0,Math.PI*2);ctx.fill();ctx.fillStyle='#63351f';ctx.fillRect(7,7,17,7);ctx.fillStyle='#e63232';ctx.fillRect(5,3,19,7);ctx.fillRect(1,7,25,5);ctx.fillStyle='#fff';ctx.fillRect(13,4,6,4);ctx.fillStyle='#222';ctx.fillRect(10,13,2,3);ctx.fillRect(18,13,2,3);ctx.fillRect(11,19,9,2);ctx.restore()}
+function drawEnemy(e){ctx.save();ctx.translate(e.x,e.y);ctx.fillStyle=e.boss?'#7d3fb2':'#8a4b25';ctx.fillRect(4,8,e.w-8,e.h-8);ctx.fillStyle='#f0b58e';ctx.fillRect(0,0,e.w,Math.min(12,e.h));ctx.fillStyle='#222';ctx.fillRect(e.w*.25,10,4,4);ctx.fillRect(e.w*.7,10,4,4);ctx.fillStyle='#653d22';ctx.fillRect(4,e.h-5,e.w*.35,5);ctx.fillRect(e.w*.6,e.h-5,e.w*.35,5);ctx.restore()}
+function draw(){const t=themes[world-1];ctx.clearRect(0,0,W,H);ctx.fillStyle=t.sky;ctx.fillRect(0,0,W,H);ctx.save();ctx.translate(-camera*.25,0);for(let i=-2;i<14;i++){const bx=i*170;ctx.fillStyle=world===3?'#e9f7ff':world===4?'#291b25':'#ffffff44';ctx.beginPath();ctx.arc(bx+50,130,50,Math.PI,0);ctx.arc(bx+110,130,60,Math.PI,0);ctx.fill()}ctx.restore();ctx.save();ctx.translate(-camera,0);for(const q of platforms){ctx.fillStyle=t.ground;ctx.fillRect(q.x,q.y,q.w,q.h);ctx.fillStyle=t.top;ctx.fillRect(q.x,q.y,q.w,10)}for(const c of coins)if(!c.got){ctx.fillStyle='#ffd43b';ctx.beginPath();ctx.arc(c.x,c.y,c.r,0,Math.PI*2);ctx.fill();ctx.fillStyle='#a66b00';ctx.fillRect(c.x-2,c.y-6,4,12)}for(const s of stars)if(!s.got){ctx.fillStyle='#fff16b';ctx.beginPath();for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,rr=i%2?5:12;ctx.lineTo(s.x+Math.cos(a)*rr,s.y+Math.sin(a)*rr)}ctx.closePath();ctx.fill()}for(const e of enemies)drawEnemy(e);ctx.fillStyle='#eee';ctx.fillRect(finish.x,finish.y,7,100);ctx.fillStyle='#e33a32';ctx.beginPath();ctx.moveTo(finish.x+7,finish.y);ctx.lineTo(finish.x+55,finish.y+16);ctx.lineTo(finish.x+7,finish.y+32);ctx.fill();drawPlayer();for(const z of particles){ctx.fillStyle='#fff';ctx.fillRect(z.x,z.y,4,4)}ctx.restore();}
+function loop(ts){if(!last)last=ts;const dt=(ts-last)/1000;last=ts;update(dt);draw();requestAnimationFrame(loop)}
+renderLevels();buildLevel(1);requestAnimationFrame(loop);
 </script>
 </body>
 </html>
