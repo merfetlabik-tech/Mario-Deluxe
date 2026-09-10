@@ -1,0 +1,13 @@
+{
+  "background_color": "#ffffff",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "merfetlabik-tech.github",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "Mario Deluxe",
+  "start_url": "/",
+  "theme_color": "#ffffff",
+  "id": "mario-Deluxe",
+  "description": "Mario Deluxe هي لعبه منصات ممتعه تحتوي علي 5عوالم و50 مستوي"
+}
