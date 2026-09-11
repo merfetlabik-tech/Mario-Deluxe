@@ -1,0 +1,14 @@
+{
+  "background_color": "#ffffff",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "Mario Deluxe",
+  "orientation": "any",
+  "scope": "/Mario-Deluxe/",
+  "short_name": "Mario Deluxe",
+  "start_url": "/Mario-Deluxe/",
+  "theme_color": "#ffffff",
+  "id": "mario-Deluxe",
+  "description": "Mario Deluxe هي لعبه منصات ممتعه تحتوي علي 5عوالم و50 مستوي",
+  "lang": "ar"
+}
